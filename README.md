@@ -3,7 +3,7 @@
 OffensivePH is a post-exploitation tool that utilizes an old Process Hacker driver to bypass several user-mode access controls. 
 
 ## Usage
-- Compile OffensivePH with VS2019 (tested). Edit resource files according to your environment.
+- Compile OffensivePH with VS2019 (tested). 
 - Execute with Admin privileges.
 ```
 offensivph.exe [-kill|-peb|-hijack|-apcinject] [<PID>] [<URL>]
@@ -50,3 +50,8 @@ offensivph.exe [-kill|-peb|-hijack|-apcinject] [<PID>] [<URL>]
 ## References
 This repo contains lots of codes and inspration from original Process Hacker code. 
 - https://github.com/processhacker/processhacker
+- https://github.com/processhacker/phnt
+
+## TODO
+- Reflective DLLs and C2 implementation
+- Hiding Kph Driver

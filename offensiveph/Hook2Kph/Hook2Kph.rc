@@ -50,7 +50,7 @@ END
 // FILE
 //
 
-IDR_FILE1               FILE                    "..\\kprocesshacker2_x64.sys"
+IDR_FILE1               FILE                    "kprocesshacker2_x64.sys"
 
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////

@@ -178,7 +178,7 @@
     <ResourceCompile Include="Hook2Kph.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\kprocesshacker2_x64.sys" />
+    <None Include="kprocesshacker2_x64.sys" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
