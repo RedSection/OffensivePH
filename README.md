@@ -1,10 +1,13 @@
 # offensiveph
 
-OffensivePH is a post-exploitation tool that utilizes an old Process Hacker driver to bypass several user-mode access controls. 
+OffensivePH is a post-exploitation tool that utilizes an old Process Hacker driver to bypass several user-mode access controls.
 
 ## Usage
 - Compile OffensivePH with VS2019 (tested). 
 - Execute with Admin privileges.
+- offensiveph.exe: Standalone tool that can be used as a shellcode loader or process killer. 
+- Hook2Kph.dll: a DLL that can be injected into your process to redirect several standard API calls to IOCTLs. Tools like sRDI can be used to convert Hook2Kph.dll into shellcode and inject your attacker process.    
+- OffensivePH will extract the old Process Hacker driver from its resource section into the current directory with the name kph.sys and create a service to install driver. After execution service and file should be deleted automatically. 
 ```
 offensivph.exe [-kill|-peb|-hijack|-apcinject] [<PID>] [<URL>]
 	-kill		: Kill process (can kill PPLs)
