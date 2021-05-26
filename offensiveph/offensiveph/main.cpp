@@ -10,6 +10,24 @@
 #define SERVICENAME L"kphsrv"
 #define DRIVERNAME L"\\kph.sys"
 
+BOOL EnableSeDebugPrivilege() {
+	BOOL bRet = FALSE;
+	HANDLE hToken = NULL;
+	LUID luid = { 0 };
+
+	if (OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES, &hToken)) {
+		if (LookupPrivilegeValue(NULL, SE_DEBUG_NAME, &luid)) {
+			TOKEN_PRIVILEGES tokenPriv = { 0 };
+			tokenPriv.PrivilegeCount = 1;
+			tokenPriv.Privileges[0].Luid = luid;
+			tokenPriv.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+			bRet = AdjustTokenPrivileges(hToken, FALSE, &tokenPriv, sizeof(TOKEN_PRIVILEGES), NULL, NULL);
+		}
+	}
+	return bRet;
+}
+
+
 int wmain(int argc, wchar_t* argv[]) {
 	DWORD status = -1;
 	NTSTATUS ntstatus;
@@ -22,6 +40,14 @@ int wmain(int argc, wchar_t* argv[]) {
 	if (argc < 2) {
 		printf("\n[+] Usage: offensivph.exe [-kill|-peb|-hijack|-apcinject] [<PID>] [<URL>]");
 		return 0;
+	}
+
+	if (EnableSeDebugPrivilege()) {
+		printf("\n[+] SeDebugPrivilege is enabled succesfully");
+	}
+	else {
+		printf("\n[-] SeDebugPrivilege could not be enabled");
+		return -5;
 	}
 
 	GetCurrentDirectory(MAX_PATH, lpFilePath);
