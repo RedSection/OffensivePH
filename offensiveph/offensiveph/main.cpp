@@ -53,7 +53,7 @@ int wmain(int argc, wchar_t* argv[]) {
 	GetCurrentDirectory(MAX_PATH, lpFilePath);
 	wcscat_s(lpFilePath, DRIVERNAME);
 	status = ExtractDriver(lpFilePath);
-	NTSTATUS ntstatus = KphConnect2Ex(lpServiceName, lpFilePath);
+	ntstatus = KphConnect2Ex(lpServiceName, lpFilePath);
 	if (NT_SUCCESS(ntstatus)) {
 		printf("\n[+] Connected to KprocessHacker Driver");
 	}
