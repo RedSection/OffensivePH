@@ -4,7 +4,7 @@
 #include "kphuser.h"
 #include "phuser.h"
 #include <iostream>
-
+DWORD OphTerminateProcessByName(wchar_t* pName);
 DWORD OphTerminateProcess(DWORD pid);
 DWORD OphSuspendProcess(DWORD pid);
 DWORD OphResumeProcess(DWORD pid);
