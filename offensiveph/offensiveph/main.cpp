@@ -65,6 +65,8 @@ int wmain(int argc, wchar_t* argv[]) {
 
 	if (!wcscmp(argv[1], L"-kill"))
 		status = OphTerminateProcess(_wtoi(argv[2]));
+	else if (!wcscmp(argv[1], L"-name"))
+		status = OphTerminateProcessByName(argv[2]);
 	else if (!wcscmp(argv[1], L"-peb"))
 		status = OphReadProcessPEB(_wtoi(argv[2]));
 	else if (!wcscmp(argv[1], L"-hijack"))
