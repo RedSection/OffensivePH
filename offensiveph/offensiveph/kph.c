@@ -2,7 +2,8 @@
  * Process Hacker -
  *   KProcessHacker API
  *
- * Copyright (C) 2009-2011 wj32
+ * Copyright (C) 2009-2016 wj32
+ * Copyright (C) 2018-2020 dmex
  *
  * This file is part of Process Hacker.
  *
