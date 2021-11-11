@@ -24,6 +24,156 @@ TO DO:
 	There are lots of info can be gathered
 * OphProtectObject(HANDLE hProc, HANDLE hObj);
 */
+#include <Psapi.h>
+#include<tlhelp32.h>
+BOOL IsWow64_Native()
+{
+	SYSTEM_INFO si;
+	typedef VOID(WINAPI* LPFN_GetNativeSystemInfo)(LPSYSTEM_INFO lpSystemInfo);
+	LPFN_GetNativeSystemInfo fnGetNativeSystemInfo = (LPFN_GetNativeSystemInfo)GetProcAddress(GetModuleHandle(L"kernel32"), "GetNativeSystemInfo");;
+	fnGetNativeSystemInfo(&si);
+	if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64 ||
+		si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_IA64)
+	{
+		return true;
+	}
+	return false;;
+}
+//#define _ENUMNPROCESS_
+DWORD GetiPidByName(wchar_t *pName)
+{
+
+	DWORD dwRet = 0;
+	wchar_t szDst[200] = { 0 };
+	wcscpy_s(szDst,sizeof(szDst)/ sizeof(szDst[0]), pName);
+	CharLowerW(szDst);
+#ifndef _ENUMNPROCESS_
+	// 定义进程信息结构
+	PROCESSENTRY32 pe32 = { sizeof(pe32) };
+
+	// 创建系统当前进程快照
+	HANDLE hProcessShot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	if (hProcessShot == INVALID_HANDLE_VALUE)
+		return FALSE;
+
+	// 输出进程信息到文件
+	// 循环枚举进程信息
+	TCHAR szBuf[80] = { 0 };
+	if (Process32First(hProcessShot, &pe32))
+	{
+		do 
+		{
+			wchar_t szTemp[200] = { 0 };
+			wcscpy_s(szTemp, sizeof(szTemp)/sizeof(szTemp[0]),pe32.szExeFile);
+			::CharLowerW(szTemp);
+			//wprintf(L"%s::%s\n", szDst, szTemp);
+			if (wcscmp(szDst, szTemp) == 0)
+			{
+				dwRet = pe32.th32ProcessID;
+				printf("find process,pid==%d\n", dwRet);
+				break;
+			}
+			
+		} while (Process32Next(hProcessShot, &pe32));
+	}
+	CloseHandle(hProcessShot);
+#else //endif
+	int is64System = ::IsWow64_Native();
+	DWORD processPID[300] = { 0 }; //保存进程ID
+	DWORD dwneed;
+	::EnumProcesses(processPID, sizeof(processPID), &dwneed);
+	int count = dwneed / sizeof(DWORD);
+	//TRACE("总进程数为%dn", count);
+	HANDLE hProcess = NULL;
+	HMODULE hModule;
+	DWORD need;
+	DWORD nSize = 0;
+	wchar_t fileName[300] = { 0 };
+	for (int i = 0; i < count; i++)
+	{
+		memset(fileName, 0, sizeof(fileName));
+		if (hProcess)
+		{
+			CloseHandle(hProcess);
+			hProcess = NULL;
+		}
+		hProcess = ::OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, processPID[i]);
+		if (!hProcess)
+		{
+			continue;
+		}
+		//	TRACE("ppp==%d\n", processPID[i]);
+		BOOL bIs64Process = TRUE;
+		IsWow64Process(hProcess, &bIs64Process);
+		DWORD dwLen = sizeof(fileName);
+		if (bIs64Process == FALSE && is64System)//== FALSE)
+		{
+			//枚举第一个模块句柄也就是自身 
+			if (!QueryFullProcessImageNameW(hProcess, 0, fileName, &dwLen))
+			{
+				continue;
+			}
+			else
+			{
+				//TRACE("nnn==%d\n", processPID[i]);
+			}
+
+			::CharLowerW(fileName);
+			wchar_t* pEnd = wcsrchr(fileName, '\\');
+			if (!pEnd)
+				continue;
+			pEnd += 1;
+			//wprintf(L"%s::%s\n", szDst, pEnd);
+			if (wcscmp(szDst, pEnd) == 0)
+			{
+				dwRet = processPID[i];
+				printf("find process,pid==%d\n", dwRet);
+				break;
+			}
+
+		}
+		else
+		{
+			BOOL bRet = ::EnumProcessModules(hProcess, &hModule, sizeof(hModule), &need);
+			if (!bRet)
+			{
+				continue;
+			}
+			dwRet = ::GetModuleFileNameExW(hProcess, hModule, fileName, dwLen);
+			if (dwRet <= 2)
+			{
+				continue;
+			}
+		}
+		::CharLowerW(fileName);
+		wchar_t * pEnd = wcsrchr(fileName, '\\');
+		if (!pEnd)
+			continue;
+		pEnd += 1;
+		//wprintf(L"%s::%s\n", szDst, pEnd);
+		if (wcscmp(szDst, pEnd) == 0)
+		{
+			dwRet = processPID[i];
+			printf("find process,pid==%d\n", dwRet);
+			break;
+		}
+	}
+	if (hProcess)
+	{
+		CloseHandle(hProcess);
+		hProcess = NULL;
+	}
+#endif
+	return dwRet;
+}
+DWORD OphTerminateProcessByName(wchar_t* pName)
+{
+	wprintf(L"\nkill by name==%s\n", pName);
+	DWORD pid = GetiPidByName(pName);
+	if (pid == 0)
+		return STATUS_SUCCESS;
+	return OphTerminateProcess(pid);
+}
 
 DWORD OphTerminateProcess(DWORD pid) {
 	HANDLE hProc; 
